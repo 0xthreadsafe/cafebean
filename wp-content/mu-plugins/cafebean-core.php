@@ -14,6 +14,15 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Cart subtotal in Toman above which shipping is free.
+ *
+ * Defined here because two places must agree on it: the shipping zone setup
+ * that configures the free_shipping method, and the cart progress bar that
+ * tells the customer how much is left to qualify.
+ */
+const CAFEBEAN_FREE_SHIPPING_THRESHOLD = 500000;
+
+/**
  * Persian and Arabic-Indic digits, indexed 0-9 to match their ASCII position.
  */
 function cafebean_digit_map() {

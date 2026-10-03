@@ -97,6 +97,47 @@ wp option update woocommerce_store_pages_only 'no'
 wp option update woocommerce_onboarding_profile '{"skipped":true}' --format=json
 wp option patch update _transient_woocommerce_onboarding_profile skipped true 2>/dev/null || true
 
+step "Configuring payment gateways"
+# A gateway has no option row until it is first saved, so these are written in
+# full rather than patched - "wp option patch" fails on a missing option.
+
+# Cash on delivery is the always-works path for demoing the order flow.
+wp option update woocommerce_cod_settings --format=json <<'JSON'
+{
+	"enabled": "yes",
+	"title": "پرداخت در محل",
+	"description": "مبلغ سفارش هنگام تحویل کالا دریافت می‌شود.",
+	"instructions": "لطفاً مبلغ را هنگام تحویل به پیک پرداخت کنید.",
+	"enable_for_methods": [],
+	"enable_for_virtual": "no"
+}
+JSON
+
+# Zarinpal stays in sandbox: this is a portfolio demo and must never take a real
+# payment. The option key is case-sensitive.
+#
+# trust_logo is deliberately blank: the stock badge pulls a script from
+# zarinpal.com into every checkout view, and the demo keeps third-party requests
+# off the critical path.
+wp option update woocommerce_WC_ZPal_settings --format=json <<JSON
+{
+	"enabled": "yes",
+	"title": "پرداخت امن زرین‌پال",
+	"description": "پرداخت امن به وسیله کلیه کارت‌های عضو شتاب از طریق درگاه زرین‌پال",
+	"merchantcode": "${ZARINPAL_MERCHANT_ID}",
+	"access_token": "",
+	"sandbox": "yes",
+	"fee_payer": "merchant",
+	"success_message": "با تشکر از شما. سفارش شما با موفقیت پرداخت شد.",
+	"failed_message": "پرداخت شما ناموفق بوده است. لطفاً مجدداً تلاش نمایید.",
+	"instructions": "",
+	"trust_logo": ""
+}
+JSON
+
+step "Creating shipping zones"
+wp eval-file /scripts/setup-shipping.php
+
 step "Renaming the WooCommerce pages to Persian"
 # WooCommerce creates these in English before the locale switch takes effect.
 rename_page() {
