@@ -5,12 +5,69 @@ Description: کودک‌قالب اختصاصی فروشگاه کافه‌بین
 Author: Alireza
 Template: astra
 Version: 0.1.0
+License: GNU General Public License v2 or later
 Text Domain: cafebean
 */
 
+/**
+ * Design tokens. Everything else in the theme references these, so a palette
+ * change happens here and nowhere else.
+ */
 :root {
+	--cb-font: "Vazirmatn", system-ui, sans-serif;
+
 	--cb-color-bg: #fffdf9;
+	--cb-color-surface: #ffffff;
 	--cb-color-ink: #2b1d14;
+	--cb-color-ink-muted: #6b5848;
 	--cb-color-accent: #8c5a2b;
+	--cb-color-accent-ink: #ffffff;
+	--cb-color-border: #e7ddd2;
+	--cb-color-success: #2f7d4f;
+
 	--cb-radius: 10px;
+	--cb-space-xs: 0.25rem;
+	--cb-space-sm: 0.5rem;
+	--cb-space-md: 1rem;
+	--cb-space-lg: 2rem;
+
+	/* Persian text needs a little more line height than Latin to stay legible. */
+	--cb-line-height: 1.9;
+}
+
+body {
+	font-family: var(--cb-font);
+	line-height: var(--cb-line-height);
+	color: var(--cb-color-ink);
+	background-color: var(--cb-color-bg);
+}
+
+/**
+ * Persian numerals render with inconsistent widths in some UI contexts; keep
+ * prices and other figures tabular so columns line up.
+ */
+.cb-numeric,
+.woocommerce .price,
+.woocommerce-Price-amount {
+	font-variant-numeric: tabular-nums;
+}
+
+/**
+ * Logical properties only — never margin-left/right — so RTL works without a
+ * separate stylesheet. See CLAUDE.md.
+ */
+.cb-stack > * + * {
+	margin-block-start: var(--cb-space-md);
+}
+
+.cb-badge {
+	display: inline-block;
+	padding-block: var(--cb-space-xs);
+	padding-inline: var(--cb-space-sm);
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-accent);
+	color: var(--cb-color-accent-ink);
+	font-size: 0.8rem;
+	font-weight: 500;
+	line-height: 1.6;
 }

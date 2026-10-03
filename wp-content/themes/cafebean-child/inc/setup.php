@@ -1,6 +1,6 @@
 <?php
 /**
- * Theme supports and asset loading.
+ * Theme supports, asset loading and fonts.
  *
  * @package cafebean
  */
@@ -8,10 +8,72 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Load the parent and child stylesheets.
+ * Declare what the child theme supports.
+ *
+ * Astra already declares most of this; the WooCommerce gallery features are
+ * opt-in per theme, so they must be repeated here.
+ */
+function cafebean_setup() {
+	load_child_theme_textdomain( 'cafebean', CAFEBEAN_DIR . '/languages' );
+
+	add_theme_support( 'woocommerce' );
+	add_theme_support( 'wc-product-gallery-zoom' );
+	add_theme_support( 'wc-product-gallery-lightbox' );
+	add_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'after_setup_theme', 'cafebean_setup' );
+
+/**
+ * Load the parent and child stylesheets plus the self-hosted font face rules.
  */
 function cafebean_enqueue_styles() {
-	wp_enqueue_style( 'astra-parent', get_template_directory_uri() . '/style.css', array(), CAFEBEAN_VERSION );
-	wp_enqueue_style( 'cafebean', CAFEBEAN_URI . '/style.css', array( 'astra-parent' ), CAFEBEAN_VERSION );
+	// Astra's style.css carries only the theme header - its real CSS is in
+	// assets/css/minified/main.min-rtl.css, already enqueued by the parent.
+	// Enqueuing it here would just add an empty request.
+	wp_enqueue_style(
+		'cafebean-fonts',
+		CAFEBEAN_URI . '/assets/css/fonts.css',
+		array(),
+		CAFEBEAN_VERSION
+	);
+
+	wp_enqueue_style(
+		'cafebean',
+		CAFEBEAN_URI . '/style.css',
+		array( 'astra-theme-css', 'cafebean-fonts' ),
+		CAFEBEAN_VERSION
+	);
 }
 add_action( 'wp_enqueue_scripts', 'cafebean_enqueue_styles' );
+
+/**
+ * Preload the regular weight.
+ *
+ * Body copy always needs it, and without a preload the font only starts
+ * downloading after fonts.css has parsed, which shows a flash of fallback text.
+ */
+function cafebean_preload_font() {
+	printf(
+		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+		esc_url( CAFEBEAN_URI . '/assets/fonts/Vazirmatn-Regular.woff2' )
+	);
+}
+add_action( 'wp_head', 'cafebean_preload_font', 1 );
+
+/**
+ * Use Vazirmatn in the block editor and the admin, so drafting matches the
+ * front end and the admin stays readable in Persian.
+ */
+function cafebean_admin_font() {
+	wp_enqueue_style(
+		'cafebean-fonts',
+		CAFEBEAN_URI . '/assets/css/fonts.css',
+		array(),
+		CAFEBEAN_VERSION
+	);
+	wp_add_inline_style(
+		'cafebean-fonts',
+		'body, .wp-admin, #wpadminbar * { font-family: "Vazirmatn", system-ui, sans-serif; }'
+	);
+}
+add_action( 'admin_enqueue_scripts', 'cafebean_admin_font' );
