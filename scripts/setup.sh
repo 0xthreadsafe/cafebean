@@ -79,7 +79,8 @@ wp option update woocommerce_currency IRT
 wp option update woocommerce_price_thousand_sep ','
 wp option update woocommerce_price_decimal_sep '.'
 wp option update woocommerce_price_num_decimals 0
-wp option update woocommerce_currency_pos left_space
+# Persian reads the unit after the amount: «۸۵۰,۰۰۰ تومان», not «تومان ۸۵۰,۰۰۰».
+wp option update woocommerce_currency_pos right_space
 wp option update woocommerce_default_country 'IR:THR'
 wp option update woocommerce_allowed_countries 'specific'
 wp option update woocommerce_specific_allowed_countries '["IR"]' --format=json
@@ -87,9 +88,34 @@ wp option update woocommerce_ship_to_countries 'specific'
 wp option update woocommerce_specific_ship_to_countries '["IR"]' --format=json
 wp option update woocommerce_enable_guest_checkout 'yes'
 wp option update woocommerce_calc_taxes 'no'
+# New WooCommerce installs default to "coming soon" mode, which replaces the
+# whole storefront with a placeholder page. Without this the shop looks empty.
+wp option update woocommerce_coming_soon 'no'
+wp option update woocommerce_store_pages_only 'no'
+
 # Skip the WooCommerce onboarding wizard so a fresh run lands on a usable admin.
 wp option update woocommerce_onboarding_profile '{"skipped":true}' --format=json
 wp option patch update _transient_woocommerce_onboarding_profile skipped true 2>/dev/null || true
+
+step "Renaming the WooCommerce pages to Persian"
+# WooCommerce creates these in English before the locale switch takes effect.
+rename_page() {
+	local id
+	id="$( wp option get "$1" 2>/dev/null || true )"
+	[[ -n "${id}" && "${id}" != "0" ]] || return 0
+	wp post update "${id}" --post_title="$2" >/dev/null
+}
+rename_page woocommerce_shop_page_id "فروشگاه"
+rename_page woocommerce_cart_page_id "سبد خرید"
+rename_page woocommerce_checkout_page_id "تسویه حساب"
+rename_page woocommerce_myaccount_page_id "حساب کاربری"
+rename_page woocommerce_terms_page_id "قوانین و مقررات"
+
+step "Removing the default WordPress sample content"
+for sample in sample-page hello-world refund_returns privacy-policy; do
+	ID="$( wp post list --post_type=page,post --name="${sample}" --field=ID --post_status=any )"
+	[[ -n "${ID}" ]] && wp post delete "${ID}" --force >/dev/null || true
+done
 
 step "Creating pages"
 # WooCommerce creates cart/checkout/account itself; these are ours.
