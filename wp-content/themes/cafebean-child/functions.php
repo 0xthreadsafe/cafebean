@@ -14,3 +14,4 @@ define( 'CAFEBEAN_URI', get_stylesheet_directory_uri() );
 define( 'CAFEBEAN_VERSION', '0.1.0' );
 
 require_once CAFEBEAN_DIR . '/inc/setup.php';
+require_once CAFEBEAN_DIR . '/inc/woocommerce.php';
