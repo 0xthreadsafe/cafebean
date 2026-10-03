@@ -1,0 +1,16 @@
+/*
+Theme Name: CafeBean Child
+Theme URI: https://example.test/cafebean
+Description: کودک‌قالب اختصاصی فروشگاه کافه‌بین — تمام کدهای سفارشی اینجا قرار می‌گیرند.
+Author: Alireza
+Template: astra
+Version: 0.1.0
+Text Domain: cafebean
+*/
+
+:root {
+	--cb-color-bg: #fffdf9;
+	--cb-color-ink: #2b1d14;
+	--cb-color-accent: #8c5a2b;
+	--cb-radius: 10px;
+}
