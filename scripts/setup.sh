@@ -176,6 +176,9 @@ HOME_ID="$( wp post list --post_type=page --name=home --field=ID )"
 wp option update show_on_front page
 wp option update page_on_front "${HOME_ID}"
 
+step "Writing page content"
+wp eval-file /scripts/setup-pages.php
+
 step "Setting permalinks"
 # Persian product slugs, per the SEO targets.
 wp rewrite structure '/%postname%/'

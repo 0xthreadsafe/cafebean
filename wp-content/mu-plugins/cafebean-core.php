@@ -58,3 +58,88 @@ function cafebean_to_english_digits( $value ) {
 	$value = str_replace( $map['fa'], $map['en'], (string) $value );
 	return str_replace( $map['ar'], $map['en'], $value );
 }
+
+/**
+ * Meta key holding the optional product badge text (e.g. «تازه برشته»).
+ *
+ * Registered here rather than in the theme: the value is product data, and it
+ * must survive a theme switch along with the admin field that edits it.
+ */
+const CAFEBEAN_BADGE_META = '_cafebean_badge';
+
+/**
+ * Register the badge meta so it is sanitised consistently and exposed to the
+ * REST API for the block editor.
+ *
+ * @return void
+ */
+function cafebean_register_product_meta() {
+	register_post_meta(
+		'product',
+		CAFEBEAN_BADGE_META,
+		array(
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'sanitize_text_field',
+			'auth_callback'     => static function () {
+				return current_user_can( 'edit_products' );
+			},
+		)
+	);
+}
+add_action( 'init', 'cafebean_register_product_meta' );
+
+/**
+ * Read a product's badge text.
+ *
+ * @param int $product_id Product ID.
+ * @return string Badge text, or an empty string.
+ */
+function cafebean_get_badge( $product_id ) {
+	return (string) get_post_meta( $product_id, CAFEBEAN_BADGE_META, true );
+}
+
+/**
+ * Add the badge input to the product data panel.
+ *
+ * @return void
+ */
+function cafebean_badge_field() {
+	woocommerce_wp_text_input(
+		array(
+			'id'          => CAFEBEAN_BADGE_META,
+			'label'       => __( 'برچسب محصول', 'cafebean' ),
+			'description' => __( 'متن کوتاهی که روی تصویر محصول نمایش داده می‌شود، مثلاً «تازه برشته». خالی بگذارید تا برچسبی نمایش داده نشود.', 'cafebean' ),
+			'desc_tip'    => true,
+			'placeholder' => __( 'تازه برشته', 'cafebean' ),
+		)
+	);
+}
+add_action( 'woocommerce_product_options_general_product_data', 'cafebean_badge_field' );
+
+/**
+ * Persist the badge input.
+ *
+ * @param int $product_id Product ID.
+ * @return void
+ */
+function cafebean_save_badge_field( $product_id ) {
+	// WooCommerce verifies its own nonce before firing this hook; this check
+	// keeps the function safe if it is ever called from elsewhere.
+	if ( ! current_user_can( 'edit_product', $product_id ) ) {
+		return;
+	}
+
+	$badge = isset( $_POST[ CAFEBEAN_BADGE_META ] )
+		? sanitize_text_field( wp_unslash( $_POST[ CAFEBEAN_BADGE_META ] ) )
+		: '';
+
+	if ( '' === $badge ) {
+		delete_post_meta( $product_id, CAFEBEAN_BADGE_META );
+		return;
+	}
+
+	update_post_meta( $product_id, CAFEBEAN_BADGE_META, $badge );
+}
+add_action( 'woocommerce_process_product_meta', 'cafebean_save_badge_field' );

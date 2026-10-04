@@ -106,3 +106,112 @@ body {
 .cb-shipping-progress--done .cb-shipping-progress__fill {
 	background-color: var(--cb-color-success);
 }
+
+/* Product badge ---------------------------------------------------------- */
+
+.woocommerce ul.products li.product,
+.woocommerce div.product div.images {
+	position: relative;
+}
+
+.cb-badge--product {
+	position: absolute;
+	inset-block-start: var(--cb-space-md);
+	inset-inline-start: var(--cb-space-md);
+	z-index: 3;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+}
+
+/* Home hero -------------------------------------------------------------- */
+
+.cb-hero {
+	padding-block: var(--cb-space-lg);
+	text-align: center;
+}
+
+.cb-hero__title {
+	margin-block-end: var(--cb-space-sm);
+}
+
+.cb-hero__text {
+	max-inline-size: 48ch;
+	margin-inline: auto;
+	color: var(--cb-color-ink-muted);
+}
+
+/* Trust badges ----------------------------------------------------------- */
+
+.cb-trust {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--cb-space-md);
+	margin-block: var(--cb-space-lg);
+	padding: 0;
+	list-style: none;
+}
+
+.cb-trust__item {
+	padding: var(--cb-space-md);
+	border: 1px solid var(--cb-color-border);
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-surface);
+}
+
+.cb-trust__title {
+	display: block;
+	margin-block-end: var(--cb-space-xs);
+	color: var(--cb-color-accent);
+}
+
+.cb-trust__text {
+	font-size: 0.9rem;
+	color: var(--cb-color-ink-muted);
+}
+
+/* Contact form ----------------------------------------------------------- */
+
+.cb-form__row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--cb-space-xs);
+	margin-block-end: var(--cb-space-md);
+}
+
+.cb-form__row input,
+.cb-form__row textarea {
+	inline-size: 100%;
+}
+
+/*
+ * The honeypot must be unreachable for people but still present and fillable
+ * for bots, so it is moved out of view rather than set to display:none - some
+ * bots skip hidden fields.
+ */
+.cb-honeypot {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.cb-notice {
+	padding: var(--cb-space-sm) var(--cb-space-md);
+	border-radius: var(--cb-radius);
+	border-inline-start: 4px solid var(--cb-color-accent);
+	background-color: var(--cb-color-surface);
+}
+
+.cb-notice--success {
+	border-inline-start-color: var(--cb-color-success);
+}
+
+.cb-notice--error {
+	border-inline-start-color: #b3261e;
+}
+
+.cb-note {
+	font-size: 0.85rem;
+	color: var(--cb-color-ink-muted);
+}

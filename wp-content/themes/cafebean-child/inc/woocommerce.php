@@ -122,3 +122,30 @@ function cafebean_weight_option_digits( $option, $term = null, $attribute = '', 
 	return sprintf( esc_html__( '%s گرم', 'cafebean' ), cafebean_to_persian_digits( $option ) );
 }
 add_filter( 'woocommerce_variation_option_name', 'cafebean_weight_option_digits', 20, 4 );
+
+/**
+ * Render the product badge over the thumbnail.
+ *
+ * The badge text itself lives in product meta (see the mu-plugin) so it is
+ * editable per product rather than hard-coded here.
+ *
+ * @return void
+ */
+function cafebean_render_badge() {
+	global $product;
+	if ( ! $product instanceof WC_Product ) {
+		return;
+	}
+
+	$badge = cafebean_get_badge( $product->get_id() );
+	if ( '' === $badge ) {
+		return;
+	}
+
+	printf(
+		'<span class="cb-badge cb-badge--product">%s</span>',
+		esc_html( $badge )
+	);
+}
+add_action( 'woocommerce_before_shop_loop_item_title', 'cafebean_render_badge', 15 );
+add_action( 'woocommerce_before_single_product_summary', 'cafebean_render_badge', 15 );
