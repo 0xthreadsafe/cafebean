@@ -5,9 +5,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # WooCommerce Demo Store (Persian / RTL)
 
 ## Status
-Greenfield — this file is currently the only thing in the repository, and it is not yet a git repo.
-The directory layout and commands below describe the **target** state, not the current tree. Expect
-`scripts/`, `docker-compose.yml`, `.env.example` and `wp-content/` to be missing until they are built.
+The stack is built and verified. `docker compose up -d && ./scripts/setup.sh && ./scripts/seed-products.sh`
+produces the full site from empty volumes with no manual steps (~6m30s, mostly plugin downloads).
+
+Verified on a from-scratch rebuild: 12 products, Persian/RTL throughout, COD order placed end to end,
+no horizontal scroll at 360px, `debug.log` empty with `WP_DEBUG` on, and Lighthouse mobile at
+Performance 89-93 / Accessibility 92-93 / SEO 100 / Best Practices 100.
+
+Two deviations from the plan below, both deliberate:
+- **Elementor is not installed.** The pages are core block markup written by `scripts/setup-pages.php`,
+  so layouts are reproducible from the script with no builder state in the database.
+- **Sitemap and meta descriptions do not come from Rank Math.** Rank Math only registers its sitemap
+  routes and emits front-end meta after its *interactive* setup wizard, which a script cannot drive.
+  The sitemap is WordPress core's `/wp-sitemap.xml` and the description tag is emitted by the
+  mu-plugin. Rank Math still provides titles and breadcrumbs.
+
+Remaining: the screen-recorded admin walkthrough, and deployment to the demo subdomain.
 
 ## Purpose
 A portfolio demo of a small Persian online store, built to show Karlancer clients what I deliver
@@ -108,6 +121,7 @@ docker compose up -d
 ./scripts/seed-products.sh  # sample products + images
 docker compose run --rm wpcli wp <command>   # any wp-cli command
 ./scripts/export.sh         # produces dist/db.sql + dist/wp-content.tar.gz
+./scripts/export.sh https://demo.example   # same, with URLs rewritten to the target
 ```
 Local URL: http://localhost:8080 — admin credentials come from `.env` (never commit `.env`).
 
