@@ -143,3 +143,34 @@ function cafebean_save_badge_field( $product_id ) {
 	update_post_meta( $product_id, CAFEBEAN_BADGE_META, $badge );
 }
 add_action( 'woocommerce_process_product_meta', 'cafebean_save_badge_field' );
+
+/**
+ * Is the store running against a sandbox payment gateway?
+ *
+ * @return bool
+ */
+function cafebean_is_sandbox() {
+	$settings = get_option( 'woocommerce_WC_ZPal_settings', array() );
+	return isset( $settings['sandbox'] ) && 'yes' === $settings['sandbox'];
+}
+
+/**
+ * Warn visitors that this is a portfolio demo.
+ *
+ * Driven by the gateway's own sandbox flag rather than a separate switch, so the
+ * banner cannot be left on after a real gateway is configured, or - worse - left
+ * off while payments are still fake.
+ *
+ * @return void
+ */
+function cafebean_demo_banner() {
+	if ( ! cafebean_is_sandbox() ) {
+		return;
+	}
+
+	printf(
+		'<div class="cb-demo-banner" role="status">%s</div>',
+		esc_html__( 'این سایت نمونه‌کار است و سفارش‌ها واقعی نیستند.', 'cafebean' )
+	);
+}
+add_action( 'wp_body_open', 'cafebean_demo_banner', 5 );

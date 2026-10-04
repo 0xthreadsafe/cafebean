@@ -215,3 +215,14 @@ body {
 	font-size: 0.85rem;
 	color: var(--cb-color-ink-muted);
 }
+
+/* Demo banner ------------------------------------------------------------ */
+
+.cb-demo-banner {
+	padding-block: var(--cb-space-sm);
+	padding-inline: var(--cb-space-md);
+	background-color: var(--cb-color-ink);
+	color: var(--cb-color-bg);
+	text-align: center;
+	font-size: 0.9rem;
+}
