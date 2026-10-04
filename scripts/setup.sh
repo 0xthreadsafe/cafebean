@@ -179,6 +179,9 @@ wp option update page_on_front "${HOME_ID}"
 step "Writing page content"
 wp eval-file /scripts/setup-pages.php
 
+step "Configuring SEO"
+wp eval-file /scripts/setup-seo.php
+
 step "Setting permalinks"
 # Persian product slugs, per the SEO targets.
 wp rewrite structure '/%postname%/'
@@ -212,7 +215,10 @@ for slug in about contact; do
 done
 wp menu location assign "${MENU_ID}" primary 2>/dev/null || true
 
-step "Discouraging indexing (this is a demo site)"
-wp option update blog_public 0
+step "Search engine visibility"
+# Indexing stays ON locally: WordPress suppresses sitemaps entirely when
+# blog_public is 0, and the sitemap is part of what this build demonstrates.
+# The deployed demo is set to noindex instead - see scripts/export.sh.
+wp option update blog_public 1
 
 printf '\nDone. %s — admin: %s\n' "${WP_URL}/wp-admin" "${WP_ADMIN_USER}"
