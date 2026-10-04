@@ -64,6 +64,11 @@ services:
       WORDPRESS_TABLE_PREFIX: ${DB_TABLE_PREFIX}
       # wp-cli has no web request, so WP_SITEURL alone leaves HTTP_HOST unset.
       HTTP_HOST: localhost:${WP_PORT}
+      # The container runs as uid 33 with HOME=/, which it cannot write to, so
+      # every command warns about its cache directory. Point it somewhere
+      # writable instead.
+      HOME: /tmp
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
     volumes:
       - wp_core:/var/www/html
       - ./wp-content/themes/cafebean-child:/var/www/html/wp-content/themes/cafebean-child

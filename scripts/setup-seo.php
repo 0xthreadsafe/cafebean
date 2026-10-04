@@ -18,7 +18,15 @@ update_option( 'woocommerce_permalinks', array(
 	'use_verbose_page_rules' => false,
 ) );
 
+// Rank Math emits no meta description at all while these templates are empty,
+// which costs the SEO score on every page.
+update_option( 'blogdescription', 'برشته‌کاری تخصصی قهوه؛ دانه‌های تک‌خاستگاه و ترکیب‌های اختصاصی، تازه برشته‌شده.' );
+
 $titles = (array) get_option( 'rank-math-options-titles', array() );
+$titles['homepage_description']            = '%sitedesc%';
+$titles['pt_page_default_description']     = '%excerpt%';
+$titles['pt_post_default_description']     = '%excerpt%';
+$titles['pt_product_default_description']  = '%excerpt%';
 $titles['noindex_empty_taxonomies'] = 'on';
 $titles['title_separator']          = '-';
 $titles['pt_product_default_rich_snippet'] = 'product';

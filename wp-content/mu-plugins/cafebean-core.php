@@ -174,3 +174,58 @@ function cafebean_demo_banner() {
 	);
 }
 add_action( 'wp_body_open', 'cafebean_demo_banner', 5 );
+
+/**
+ * Build a meta description for the current view.
+ *
+ * @return string
+ */
+function cafebean_meta_description() {
+	$description = '';
+
+	if ( is_front_page() ) {
+		$description = get_option( 'blogdescription', '' );
+	} elseif ( is_singular() ) {
+		$post = get_queried_object();
+		if ( $post instanceof WP_Post ) {
+			$description = $post->post_excerpt
+				? $post->post_excerpt
+				: wp_trim_words( wp_strip_all_tags( strip_shortcodes( $post->post_content ) ), 30, '' );
+		}
+	} elseif ( is_tax() || is_category() || is_tag() ) {
+		$description = term_description();
+	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
+		$shop_id     = wc_get_page_id( 'shop' );
+		$description = $shop_id > 0 ? get_post_field( 'post_excerpt', $shop_id ) : '';
+	}
+
+	if ( '' === trim( (string) $description ) ) {
+		$description = get_option( 'blogdescription', '' );
+	}
+
+	return trim( wp_strip_all_tags( (string) $description ) );
+}
+
+/**
+ * Print the meta description.
+ *
+ * Rank Math only emits its own front-end meta once its interactive setup wizard
+ * has run, and setup.sh cannot drive that wizard, so the tag is produced here.
+ * If Rank Math is ever configured by hand it will emit its own and this should
+ * be removed - there is no reliable way to detect that from here, and a guard
+ * that tried only managed to suppress this tag instead.
+ *
+ * @return void
+ */
+function cafebean_print_meta_description() {
+	$description = cafebean_meta_description();
+	if ( '' === $description ) {
+		return;
+	}
+
+	printf(
+		'<meta name="description" content="%s">' . "\n",
+		esc_attr( wp_html_excerpt( $description, 160, '…' ) )
+	);
+}
+add_action( 'wp_head', 'cafebean_print_meta_description', 2 );

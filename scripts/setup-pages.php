@@ -17,11 +17,15 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Set a page's content by slug.
  *
+ * The excerpt is set too: Rank Math builds the meta description from %excerpt%,
+ * and a page with no excerpt ends up with no description at all.
+ *
  * @param string $slug    Page slug.
  * @param string $content Block markup.
+ * @param string $excerpt Meta description source.
  * @return void
  */
-function cafebean_set_page_content( $slug, $content ) {
+function cafebean_set_page_content( $slug, $content, $excerpt = '' ) {
 	$pages = get_posts(
 		array(
 			'post_type'   => 'page',
@@ -40,6 +44,7 @@ function cafebean_set_page_content( $slug, $content ) {
 		array(
 			'ID'           => $pages[0]->ID,
 			'post_content' => $content,
+			'post_excerpt' => $excerpt,
 		)
 	);
 }
@@ -134,8 +139,23 @@ $contact = <<<'HTML'
 <!-- /wp:paragraph -->
 HTML;
 
-cafebean_set_page_content( 'home', $home );
-cafebean_set_page_content( 'about', $about );
-cafebean_set_page_content( 'contact', $contact );
+cafebean_set_page_content(
+	'home',
+	$home,
+	'فروشگاه آنلاین کافه‌بین؛ دانه قهوه تک‌خاستگاه، ترکیب‌های اختصاصی اسپرسو و لوازم جانبی باریستا با ارسال سریع به سراسر ایران.'
+);
+cafebean_set_page_content(
+	'about',
+	$about,
+	'کافه‌بین یک برشته‌کاری کوچک است که دانه‌ها را در دسته‌های کوچک و پس از ثبت سفارش برشته می‌کند.'
+);
+cafebean_set_page_content(
+	'contact',
+	$contact,
+	'برای سفارش عمده، همکاری یا پرسش درباره محصولات کافه‌بین با ما تماس بگیرید.'
+);
+
+// WooCommerce stores the short description as the excerpt, so products already
+// have one; only pages needed fixing.
 
 WP_CLI::success( 'page content written' );
