@@ -72,7 +72,18 @@ for plugin in "${PLUGINS[@]}"; do
 	wp plugin is-installed "${plugin}" || wp plugin install "${plugin}"
 	wp plugin is-active "${plugin}" || wp plugin activate "${plugin}"
 done
-wp language plugin install --all "${WP_LOCALE}" || true
+# Translations are downloaded from wordpress.org and that request sometimes
+# times out; retry once before giving up, because without the theme pack the
+# front end shows English strings like "Leave a Comment" and "Powered by".
+install_translations() {
+	wp language plugin install --all "${WP_LOCALE}" || true
+	wp language theme install --all "${WP_LOCALE}" || true
+}
+install_translations
+if ! wp language theme list astra --field=status --status=active 2>/dev/null | grep -q .; then
+	echo "    retrying translation download"
+	install_translations
+fi
 
 step "Configuring WooCommerce"
 wp option update woocommerce_currency IRT
