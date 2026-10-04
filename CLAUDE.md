@@ -118,6 +118,7 @@ Plus WooCommerce defaults: سبد خرید، تسویه حساب، حساب کا
 cp .env.example .env
 docker compose up -d
 ./scripts/setup.sh          # installs WP (fa_IR), plugins, theme, pages, menus, WC settings
+./scripts/setup.sh --force-pages   # same, but also rewrites page content edited in wp-admin
 ./scripts/seed-products.sh  # sample products + images
 docker compose run --rm wpcli wp <command>   # any wp-cli command
 ./scripts/export.sh         # produces dist/db.sql + dist/wp-content.tar.gz

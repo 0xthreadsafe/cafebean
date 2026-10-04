@@ -13,6 +13,15 @@ if [[ ! -f .env ]]; then
 fi
 set -a; . ./.env; set +a
 
+# --force-pages rewrites the generated page content even if it was edited in
+# wp-admin. Without it, edited pages are left alone.
+FORCE_PAGES=""
+for arg in "$@"; do
+	if [[ "${arg}" == "--force-pages" ]]; then
+		FORCE_PAGES="force"
+	fi
+done
+
 wp() { docker compose run --rm -T wpcli wp "$@"; }
 # The cli image's MariaDB 11.x client negotiates TLS by default and our local
 # 10.11 server has no certificates, so client-backed commands need --skip-ssl.
@@ -188,7 +197,7 @@ wp option update show_on_front page
 wp option update page_on_front "${HOME_ID}"
 
 step "Writing page content"
-wp eval-file /scripts/setup-pages.php
+wp eval-file /scripts/setup-pages.php ${FORCE_PAGES}
 
 step "Configuring SEO"
 wp eval-file /scripts/setup-seo.php

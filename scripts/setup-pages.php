@@ -2,8 +2,13 @@
 /**
  * Fill the home, about and contact pages with content.
  *
- * Run from scripts/setup.sh. setup.sh is the source of truth for the demo, so
- * this overwrites the page content every run rather than merging.
+ * Run from scripts/setup.sh. Non-destructive: the content is written on the
+ * first run, and on later runs only while the page still matches what this
+ * script last produced. Once someone edits a page in wp-admin it is theirs, and
+ * re-running setup.sh leaves it alone.
+ *
+ * Pass "force" to overwrite regardless:
+ *     ./scripts/setup.sh --force-pages
  *
  * Content is core block markup plus shortcodes, not Elementor: the layouts are
  * simple enough that blocks keep them reproducible from the script with no
@@ -15,10 +20,15 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Set a page's content by slug.
+ * Meta key recording the checksum of the content this script last wrote.
+ */
+const CAFEBEAN_GENERATED_HASH = '_cafebean_generated_hash';
+
+/**
+ * Set a page's content by slug, unless a human has edited it.
  *
- * The excerpt is set too: Rank Math builds the meta description from %excerpt%,
- * and a page with no excerpt ends up with no description at all.
+ * The excerpt is set too: the meta description is built from it, and a page
+ * with no excerpt ends up with no description at all.
  *
  * @param string $slug    Page slug.
  * @param string $content Block markup.
@@ -40,13 +50,35 @@ function cafebean_set_page_content( $slug, $content, $excerpt = '' ) {
 		return;
 	}
 
+	$page    = $pages[0];
+	$current = (string) $page->post_content;
+	$stored  = (string) get_post_meta( $page->ID, CAFEBEAN_GENERATED_HASH, true );
+
+	// Compare checksums rather than the strings themselves: the editor
+	// normalises whitespace in block markup on save, so a byte comparison would
+	// report an edit that nobody made.
+	$current_hash = md5( trim( $current ) );
+
+	if ( ! CAFEBEAN_FORCE_PAGES && '' !== trim( $current ) ) {
+		if ( '' === $stored ) {
+			WP_CLI::log( "  skipping {$slug}: has content this script did not write" );
+			return;
+		}
+		if ( $stored !== $current_hash ) {
+			WP_CLI::log( "  skipping {$slug}: edited in the admin since it was generated" );
+			return;
+		}
+	}
+
 	wp_update_post(
 		array(
-			'ID'           => $pages[0]->ID,
+			'ID'           => $page->ID,
 			'post_content' => $content,
 			'post_excerpt' => $excerpt,
 		)
 	);
+	update_post_meta( $page->ID, CAFEBEAN_GENERATED_HASH, md5( trim( $content ) ) );
+	WP_CLI::log( "  wrote {$slug}" );
 }
 
 $home = <<<'HTML'
@@ -138,6 +170,17 @@ $contact = <<<'HTML'
 <p class="cb-note">این نشانی و شماره‌ها نمونه هستند و به جایی تعلق ندارند.</p>
 <!-- /wp:paragraph -->
 HTML;
+
+/*
+ * wp-cli exposes positional arguments to eval-file as $args. This has to be a
+ * constant rather than a variable: eval-file runs the file inside a function
+ * scope, so a "global" here is really a local and the functions below cannot
+ * see it.
+ */
+define( 'CAFEBEAN_FORCE_PAGES', isset( $args ) && in_array( 'force', (array) $args, true ) );
+if ( CAFEBEAN_FORCE_PAGES ) {
+	WP_CLI::warning( 'forcing page content, admin edits will be discarded' );
+}
 
 cafebean_set_page_content(
 	'home',
