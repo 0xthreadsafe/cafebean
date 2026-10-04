@@ -71,3 +71,38 @@ body {
 	font-weight: 500;
 	line-height: 1.6;
 }
+
+/* Free-shipping progress ------------------------------------------------- */
+
+.cb-shipping-progress {
+	margin-block-end: var(--cb-space-lg);
+	padding: var(--cb-space-md);
+	border: 1px solid var(--cb-color-border);
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-surface);
+}
+
+.cb-shipping-progress__label {
+	margin-block: 0 var(--cb-space-sm);
+	font-size: 0.95rem;
+	font-weight: 500;
+}
+
+.cb-shipping-progress__track {
+	block-size: 8px;
+	border-radius: 999px;
+	background-color: var(--cb-color-border);
+	overflow: hidden;
+}
+
+.cb-shipping-progress__fill {
+	display: block;
+	block-size: 100%;
+	background-color: var(--cb-color-accent);
+	/* inline-size is set inline; the transition keeps AJAX updates from jumping. */
+	transition: inline-size 0.3s ease;
+}
+
+.cb-shipping-progress--done .cb-shipping-progress__fill {
+	background-color: var(--cb-color-success);
+}
