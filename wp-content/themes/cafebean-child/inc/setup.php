@@ -16,6 +16,11 @@ defined( 'ABSPATH' ) || exit;
 function cafebean_setup() {
 	load_child_theme_textdomain( 'cafebean', CAFEBEAN_DIR . '/languages' );
 
+	// Required for the hero: WordPress constrained layouts cap every child at
+	// the content width, and only alignfull is allowed to break out. Negative
+	// margins do not work there.
+	add_theme_support( 'align-wide' );
+
 	add_theme_support( 'woocommerce' );
 	add_theme_support( 'wc-product-gallery-zoom' );
 	add_theme_support( 'wc-product-gallery-lightbox' );

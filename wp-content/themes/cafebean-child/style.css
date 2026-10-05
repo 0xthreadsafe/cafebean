@@ -16,7 +16,7 @@ Text Domain: cafebean
 :root {
 	--cb-font: "Vazirmatn", system-ui, sans-serif;
 
-	--cb-color-bg: #fffdf9;
+	--cb-color-bg: #f7f3ed;
 	--cb-color-surface: #ffffff;
 	--cb-color-ink: #2b1d14;
 	--cb-color-ink-muted: #6b5848;
@@ -30,6 +30,7 @@ Text Domain: cafebean
 	--cb-space-sm: 0.5rem;
 	--cb-space-md: 1rem;
 	--cb-space-lg: 2rem;
+	--cb-space-xl: clamp(3.5rem, 9vw, 7rem);
 
 	/* Persian text needs a little more line height than Latin to stay legible. */
 	--cb-line-height: 1.9;
@@ -248,11 +249,12 @@ body {
 	 */
 }
 
-/* Keep the header light so the brand and nav stay legible. */
+/* Header shares the page colour so there is no seam above the hero. */
 .site-header,
 .ast-primary-header-bar,
 .main-header-bar {
-	background-color: var(--cb-color-surface);
+	background-color: var(--cb-color-bg);
+	border-block-end: 1px solid var(--cb-color-border);
 }
 
 .site-title a,
@@ -275,10 +277,9 @@ body {
 
 .cb-hero {
 	position: relative;
-	/* Pull the band out to the full viewport width from inside Astra's
-	   constrained container, without knowing the container's width. */
-	margin-inline: calc(50% - 50vw);
-	padding-block: clamp(3.5rem, 12vw, 7rem);
+	/* Full width comes from the block's alignfull class, declared in the page
+	   markup. A constrained layout caps every other child at the content width. */
+	padding-block: clamp(5rem, 18vw, 11rem);
 	padding-inline: var(--cb-space-md);
 	background-image:
 		linear-gradient(rgb(25 15 9 / 72%), rgb(25 15 9 / 72%)),
@@ -395,4 +396,234 @@ body {
 .woocommerce ul.products li.product .button,
 .woocommerce ul.products li.product .ast-woo-product-category {
 	margin-inline: var(--cb-space-md);
+}
+
+/* ========================================================================
+ * Editorial layer
+ *
+ * Borrows the structure common to specialty-roaster sites: a full-bleed hero,
+ * a value-proposition ticker, oversized headings and a lot of air between
+ * sections. Flat surfaces, hairline rules, no heavy shadows.
+ * ===================================================================== */
+
+/* --- Hero --------------------------------------------------------------- */
+
+.cb-hero__title {
+	font-size: clamp(2.1rem, 6.5vw, 4.2rem);
+	font-weight: 700;
+	line-height: 1.45;
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+
+.cb-hero__text {
+	font-size: clamp(1.02rem, 2.2vw, 1.2rem);
+	line-height: 2;
+}
+
+.cb-hero .wp-block-button__link {
+	border: 1px solid #fff;
+	border-radius: 999px;
+	background-color: transparent;
+	color: #fff;
+	font-size: 0.95rem;
+	letter-spacing: 0.02em;
+	transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* --- Value ticker ------------------------------------------------------- */
+
+.cb-ticker {
+	overflow: hidden;
+	border-block: 1px solid var(--cb-color-border);
+	background-color: var(--cb-color-ink);
+	color: var(--cb-color-bg);
+}
+
+.cb-ticker__track {
+	display: flex;
+	inline-size: max-content;
+	gap: 0;
+	/* Two identical runs sit side by side, so translating by exactly half the
+	   track loops without a visible seam. */
+	animation: cb-ticker-scroll 38s linear infinite;
+}
+
+.cb-ticker__item {
+	padding-block: 0.85rem;
+	padding-inline: 2.2rem;
+	font-size: 0.85rem;
+	letter-spacing: 0.04em;
+	white-space: nowrap;
+}
+
+.cb-ticker__item::after {
+	content: "•";
+	margin-inline-start: 2.2rem;
+	opacity: 0.45;
+}
+
+@keyframes cb-ticker-scroll {
+	from { transform: translateX(0); }
+	to   { transform: translateX(50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cb-ticker__track {
+		animation: none;
+		inline-size: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+}
+
+/* --- Statement ---------------------------------------------------------- */
+
+.cb-statement {
+	max-inline-size: 56ch;
+	margin-inline: auto;
+	margin-block: var(--cb-space-xl);
+	font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+	line-height: 2.1;
+	color: var(--cb-color-ink);
+	text-wrap: pretty;
+}
+
+/* --- Sections ----------------------------------------------------------- */
+
+.home .entry-content > h2 {
+	margin-block: var(--cb-space-xl) var(--cb-space-lg);
+	font-size: clamp(1.7rem, 4.5vw, 2.8rem);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+/* The accent rule belonged to the previous, busier look. */
+.home .entry-content > h2::after {
+	content: none;
+}
+
+/* --- Trust row ---------------------------------------------------------- */
+
+.cb-trust {
+	gap: 0;
+	margin-block: var(--cb-space-xl);
+	border-block-start: 1px solid var(--cb-color-border);
+}
+
+.cb-trust__item,
+.cb-trust__item:hover {
+	padding-block: var(--cb-space-lg);
+	padding-inline: var(--cb-space-lg);
+	border: 0;
+	border-block-end: 1px solid var(--cb-color-border);
+	border-inline-start: 1px solid var(--cb-color-border);
+	border-radius: 0;
+	background-color: transparent;
+	box-shadow: none;
+	transform: none;
+}
+
+.cb-trust__item:last-child {
+	border-inline-end: 1px solid var(--cb-color-border);
+}
+
+.cb-trust__title {
+	font-size: 1.05rem;
+	letter-spacing: 0.01em;
+	color: var(--cb-color-ink);
+}
+
+/* --- Product cards ------------------------------------------------------ */
+
+.woocommerce ul.products li.product,
+.woocommerce ul.products li.product:hover {
+	padding-block-end: var(--cb-space-md);
+	border-radius: 0;
+	background-color: transparent;
+	box-shadow: none;
+	transform: none;
+}
+
+.woocommerce ul.products li.product img {
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-surface);
+	transition: opacity 0.25s ease;
+}
+
+.woocommerce ul.products li.product:hover img {
+	opacity: 0.88;
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+	padding-inline: 0;
+	font-size: 1.05rem;
+	font-weight: 500;
+}
+
+.woocommerce ul.products li.product .price,
+.woocommerce ul.products li.product .ast-woo-product-category {
+	margin-inline: 0;
+}
+
+.woocommerce ul.products li.product .price {
+	color: var(--cb-color-ink-muted);
+	font-size: 0.95rem;
+}
+
+/* Buttons read as quiet outlines until hovered, so the photography leads. */
+.woocommerce ul.products li.product .button {
+	margin-inline: 0;
+	border: 1px solid var(--cb-color-accent);
+	border-radius: 999px;
+	background-color: transparent;
+	color: var(--cb-color-accent);
+	font-size: 0.9rem;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.woocommerce ul.products li.product .button:hover {
+	background-color: var(--cb-color-accent);
+	color: #fff;
+}
+
+/* --- Badge as a pill ---------------------------------------------------- */
+
+.cb-badge--product {
+	border-radius: 999px;
+	background-color: rgb(255 255 255 / 92%);
+	color: var(--cb-color-ink);
+	font-size: 0.72rem;
+	letter-spacing: 0.03em;
+	box-shadow: none;
+}
+
+/* --- Category tiles ----------------------------------------------------- */
+
+.woocommerce ul.products li.product-category a img {
+	border-radius: var(--cb-radius);
+}
+
+.woocommerce ul.products li.product-category h2 {
+	font-size: 1.05rem !important;
+	font-weight: 500;
+}
+
+/*
+ * The page background is not set on body at all - Astra paints it through
+ * .ast-plain-container using --ast-global-color-4, which is white and is also
+ * used for text on dark surfaces, so the container is targeted rather than the
+ * variable. Qualifying with body wins on specificity without !important.
+ */
+html body,
+body.ast-plain-container,
+body.ast-page-builder-template,
+body.ast-separate-container {
+	background-color: var(--cb-color-bg);
+}
+
+/* Product and category images keep a white tile so photos with pale
+   backgrounds do not bleed into the paper-coloured page. */
+.woocommerce ul.products li.product img {
+	background-color: #fff;
 }

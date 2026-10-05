@@ -215,3 +215,36 @@ function cafebean_contact_form_shortcode() {
 	return ob_get_clean();
 }
 add_shortcode( 'cafebean_contact_form', 'cafebean_contact_form_shortcode' );
+
+/**
+ * Scrolling value-proposition ticker under the header.
+ *
+ * The item list is printed twice: the CSS animation translates the track by
+ * exactly half its width, so the second run takes over where the first ends and
+ * the loop has no visible seam.
+ *
+ * @return void
+ */
+function cafebean_ticker() {
+	$items = array(
+		__( 'ارسال رایگان بالای ۵۰۰ هزار تومان', 'cafebean' ),
+		__( 'برشته‌کاری روزانه', 'cafebean' ),
+		__( 'پرداخت امن', 'cafebean' ),
+		__( 'ضمانت بازگشت هفت‌روزه', 'cafebean' ),
+		__( 'ارسال به سراسر ایران', 'cafebean' ),
+	);
+
+	echo '<div class="cb-ticker"><div class="cb-ticker__track">';
+	// aria-hidden on the duplicate so screen readers announce the list once.
+	for ( $run = 0; $run < 2; $run++ ) {
+		foreach ( $items as $item ) {
+			printf(
+				'<span class="cb-ticker__item"%s>%s</span>',
+				1 === $run ? ' aria-hidden="true"' : '',
+				esc_html( $item )
+			);
+		}
+	}
+	echo '</div></div>';
+}
+add_action( 'wp_body_open', 'cafebean_ticker', 6 );

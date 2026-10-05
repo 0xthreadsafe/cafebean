@@ -82,8 +82,8 @@ function cafebean_set_page_content( $slug, $content, $excerpt = '' ) {
 }
 
 $home = <<<'HTML'
-<!-- wp:group {"className":"cb-hero","layout":{"type":"constrained"}} -->
-<div class="wp-block-group cb-hero">
+<!-- wp:group {"align":"full","className":"cb-hero","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull cb-hero">
 <!-- wp:heading {"level":1,"className":"cb-hero__title"} -->
 <h1 class="wp-block-heading cb-hero__title">قهوه تازه برشته، مستقیم از برشته‌کاری ما</h1>
 <!-- /wp:heading -->
@@ -101,6 +101,10 @@ $home = <<<'HTML'
 <!-- /wp:buttons -->
 </div>
 <!-- /wp:group -->
+
+<!-- wp:paragraph {"align":"center","className":"cb-statement"} -->
+<p class="has-text-align-center cb-statement">ما دانه‌ها را مستقیم از تولیدکننده می‌خریم و در دسته‌های کوچک برشته می‌کنیم. هر بسته تاریخ برشته‌کاری دارد، چون قهوهٔ تازه با قهوهٔ مانده یکی نیست.</p>
+<!-- /wp:paragraph -->
 
 <!-- wp:shortcode -->
 [cafebean_trust_badges]
