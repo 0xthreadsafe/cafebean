@@ -1,3 +1,4 @@
 .env
 dist/
 wp-content/uploads/
+.DS_Store
