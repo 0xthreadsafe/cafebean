@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * the layout holds even before thumbnails are regenerated.
  */
 update_option( 'woocommerce_thumbnail_cropping', '1:1' );
-update_option( 'woocommerce_thumbnail_image_width', 500 );
+update_option( 'woocommerce_thumbnail_image_width', 400 );
 update_option( 'woocommerce_single_image_width', 800 );
 
 WP_CLI::success( 'image sizes set' );

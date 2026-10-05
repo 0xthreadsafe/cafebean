@@ -31,34 +31,45 @@ function cafebean_enqueue_styles() {
 	// assets/css/minified/main.min-rtl.css, already enqueued by the parent.
 	// Enqueuing it here would just add an empty request.
 	wp_enqueue_style(
-		'cafebean-fonts',
-		CAFEBEAN_URI . '/assets/css/fonts.css',
-		array(),
-		CAFEBEAN_VERSION
-	);
-
-	wp_enqueue_style(
 		'cafebean',
 		CAFEBEAN_URI . '/style.css',
-		array( 'astra-theme-css', 'cafebean-fonts' ),
+		array( 'astra-theme-css' ),
 		CAFEBEAN_VERSION
 	);
 }
 add_action( 'wp_enqueue_scripts', 'cafebean_enqueue_styles' );
 
 /**
- * Preload the regular weight.
+ * Preload the regular weight, inline the @font-face rules, and preload the hero.
  *
- * Body copy always needs it, and without a preload the font only starts
- * downloading after fonts.css has parsed, which shows a flash of fallback text.
+ * The font rules are printed inline rather than enqueued: as a separate
+ * stylesheet they were a render-blocking request worth ~300ms for under 1KB of
+ * CSS. The hero is a CSS background, which browsers discover late and fetch at
+ * low priority, so it is preloaded too - Lighthouse measured it as the
+ * largest-contentful-paint element on the front page.
  */
-function cafebean_preload_font() {
+function cafebean_preload_assets() {
 	printf(
 		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
 		esc_url( CAFEBEAN_URI . '/assets/fonts/Vazirmatn-Regular.woff2' )
 	);
+
+	if ( is_front_page() ) {
+		printf(
+			'<link rel="preload" href="%s" as="image" type="image/webp" fetchpriority="high">' . "\n",
+			esc_url( CAFEBEAN_URI . '/assets/img/hero.webp' )
+		);
+	}
+
+	$fonts = file_get_contents( CAFEBEAN_DIR . '/assets/css/fonts.css' );
+	if ( false !== $fonts ) {
+		// The rules reference ../fonts/, which is relative to the stylesheet;
+		// inline they would resolve against the page, so rewrite to absolute.
+		$fonts = str_replace( '../fonts/', CAFEBEAN_URI . '/assets/fonts/', $fonts );
+		printf( '<style id="cafebean-fonts-inline">%s</style>' . "\n", $fonts );
+	}
 }
-add_action( 'wp_head', 'cafebean_preload_font', 1 );
+add_action( 'wp_head', 'cafebean_preload_assets', 1 );
 
 /**
  * Use Vazirmatn in the block editor and the admin, so drafting matches the
@@ -66,13 +77,13 @@ add_action( 'wp_head', 'cafebean_preload_font', 1 );
  */
 function cafebean_admin_font() {
 	wp_enqueue_style(
-		'cafebean-fonts',
+		'cafebean-admin-fonts',
 		CAFEBEAN_URI . '/assets/css/fonts.css',
 		array(),
 		CAFEBEAN_VERSION
 	);
 	wp_add_inline_style(
-		'cafebean-fonts',
+		'cafebean-admin-fonts',
 		'body, .wp-admin, #wpadminbar * { font-family: "Vazirmatn", system-ui, sans-serif; }'
 	);
 }
