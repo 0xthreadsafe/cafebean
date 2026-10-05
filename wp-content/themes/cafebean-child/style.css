@@ -226,3 +226,173 @@ body {
 	text-align: center;
 	font-size: 0.9rem;
 }
+
+/* ------------------------------------------------------------------------
+ * Astra palette override
+ *
+ * Astra drives every button, link and accent from these custom properties and
+ * ships a default blue, which fights the coffee palette. Redefining the
+ * variables recolours the parent theme without touching a single parent file.
+ * ---------------------------------------------------------------------- */
+
+:root {
+	--ast-global-color-0: var(--cb-color-accent);
+	--ast-global-color-1: #6f4420;
+	--ast-global-color-2: var(--cb-color-ink);
+	--ast-global-color-3: var(--cb-color-ink-muted);
+	--ast-global-color-5: var(--cb-color-bg);
+	/*
+	 * Deliberately NOT overriding --ast-global-color-primary: Astra uses it for
+	 * the header background as well as for accents, so tinting it turned the
+	 * whole header brown and left the nav links unreadable against it.
+	 */
+}
+
+/* Keep the header light so the brand and nav stay legible. */
+.site-header,
+.ast-primary-header-bar,
+.main-header-bar {
+	background-color: var(--cb-color-surface);
+}
+
+.site-title a,
+.site-title a:visited {
+	color: var(--cb-color-ink);
+}
+
+.main-header-menu a {
+	color: var(--cb-color-ink);
+}
+
+.main-header-menu .current-menu-item > a,
+.main-header-menu a:hover {
+	color: var(--cb-color-accent);
+}
+
+/* ------------------------------------------------------------------------
+ * Hero
+ * ---------------------------------------------------------------------- */
+
+.cb-hero {
+	position: relative;
+	/* Pull the band out to the full viewport width from inside Astra's
+	   constrained container, without knowing the container's width. */
+	margin-inline: calc(50% - 50vw);
+	padding-block: clamp(3.5rem, 12vw, 7rem);
+	padding-inline: var(--cb-space-md);
+	background-image:
+		linear-gradient(rgb(25 15 9 / 72%), rgb(25 15 9 / 72%)),
+		url("assets/img/hero.webp");
+	background-size: cover;
+	background-position: center;
+	color: #fff;
+}
+
+.cb-hero > * {
+	max-inline-size: 60ch;
+	margin-inline: auto;
+}
+
+.cb-hero__title {
+	font-size: clamp(1.8rem, 5.5vw, 3.1rem);
+	line-height: 1.5;
+	color: #fff;
+	margin-block-end: var(--cb-space-md);
+}
+
+.cb-hero__text {
+	font-size: clamp(1rem, 2.4vw, 1.15rem);
+	color: rgb(255 255 255 / 88%);
+	margin-block-end: var(--cb-space-lg);
+}
+
+.cb-hero .wp-block-button__link {
+	padding-block: 0.8em;
+	padding-inline: 2.2em;
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-accent);
+	color: #fff;
+	font-weight: 500;
+}
+
+.cb-hero .wp-block-button__link:hover,
+.cb-hero .wp-block-button__link:focus {
+	background-color: #fff;
+	color: var(--cb-color-ink);
+}
+
+/* ------------------------------------------------------------------------
+ * Section rhythm
+ * ---------------------------------------------------------------------- */
+
+.home .entry-content > h2 {
+	margin-block: var(--cb-space-lg) var(--cb-space-md);
+	font-size: clamp(1.4rem, 3.5vw, 2rem);
+	text-align: center;
+}
+
+/* A short rule under section headings, mirrored automatically in RTL. */
+.home .entry-content > h2::after {
+	content: "";
+	display: block;
+	inline-size: 3rem;
+	block-size: 3px;
+	margin-block-start: var(--cb-space-sm);
+	margin-inline: auto;
+	border-radius: 2px;
+	background-color: var(--cb-color-accent);
+}
+
+/* ------------------------------------------------------------------------
+ * Trust badges
+ * ---------------------------------------------------------------------- */
+
+.cb-trust__item {
+	border-color: transparent;
+	box-shadow: 0 1px 3px rgb(43 29 20 / 8%), 0 8px 24px rgb(43 29 20 / 6%);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cb-trust__item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 2px 6px rgb(43 29 20 / 10%), 0 12px 32px rgb(43 29 20 / 10%);
+}
+
+/* ------------------------------------------------------------------------
+ * Product cards
+ * ---------------------------------------------------------------------- */
+
+.woocommerce ul.products li.product {
+	padding-block-end: var(--cb-space-md);
+	border-radius: var(--cb-radius);
+	background-color: var(--cb-color-surface);
+	box-shadow: 0 1px 3px rgb(43 29 20 / 8%), 0 8px 24px rgb(43 29 20 / 6%);
+	overflow: hidden;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.woocommerce ul.products li.product:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 2px 8px rgb(43 29 20 / 12%), 0 16px 40px rgb(43 29 20 / 12%);
+}
+
+.woocommerce ul.products li.product img {
+	/* The source photos have mixed aspect ratios; a fixed box with cover
+	   keeps the grid even regardless of what is uploaded. */
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	inline-size: 100%;
+	margin-block-end: var(--cb-space-sm);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+	padding-inline: var(--cb-space-md);
+	font-size: 1rem;
+	line-height: 1.8;
+}
+
+.woocommerce ul.products li.product .price,
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product .ast-woo-product-category {
+	margin-inline: var(--cb-space-md);
+}

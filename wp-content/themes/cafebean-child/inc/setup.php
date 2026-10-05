@@ -77,3 +77,28 @@ function cafebean_admin_font() {
 	);
 }
 add_action( 'admin_enqueue_scripts', 'cafebean_admin_font' );
+
+/**
+ * Hide the page title on the front page.
+ *
+ * The homepage is titled «خانه», which reads as an unfinished template when
+ * printed above the hero. Other pages keep their titles.
+ *
+ * @param bool $enabled Whether Astra prints the title.
+ * @return bool
+ */
+function cafebean_hide_front_page_title( $enabled ) {
+	return is_front_page() ? false : $enabled;
+}
+add_filter( 'astra_the_title_enabled', 'cafebean_hide_front_page_title' );
+
+/**
+ * Drop the breadcrumb trail on the front page for the same reason.
+ *
+ * @param bool $enabled Whether Astra prints breadcrumbs.
+ * @return bool
+ */
+function cafebean_hide_front_page_breadcrumb( $enabled ) {
+	return is_front_page() ? false : $enabled;
+}
+add_filter( 'astra_breadcrumb_enabled', 'cafebean_hide_front_page_breadcrumb' );

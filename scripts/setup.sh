@@ -155,6 +155,12 @@ wp option update woocommerce_WC_ZPal_settings --format=json <<JSON
 }
 JSON
 
+step "Setting image sizes"
+wp eval-file /scripts/setup-images.php
+
+step "Setting category thumbnails"
+wp eval-file /scripts/setup-category-images.php
+
 step "Creating shipping zones"
 wp eval-file /scripts/setup-shipping.php
 
