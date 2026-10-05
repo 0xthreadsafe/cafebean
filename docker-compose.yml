@@ -38,8 +38,23 @@ services:
       WORDPRESS_TABLE_PREFIX: ${DB_TABLE_PREFIX}
       WORDPRESS_DEBUG: ${WP_DEBUG}
       WORDPRESS_CONFIG_EXTRA: |
-        define( 'WP_HOME', '${WP_URL}' );
-        define( 'WP_SITEURL', '${WP_URL}' );
+        /*
+         * Derive the site URL from the request host instead of pinning it to
+         * localhost. A tunnel such as ngrok arrives with its own hostname, and
+         * a hard-coded WP_HOME would bounce every external visitor back to a
+         * machine they cannot reach.
+         */
+        if ( ! empty( $$_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $$_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
+            $$_SERVER['HTTPS'] = 'on';
+        }
+        if ( ! empty( $$_SERVER['HTTP_HOST'] ) ) {
+            $$cafebean_scheme = ( ! empty( $$_SERVER['HTTPS'] ) && 'off' !== $$_SERVER['HTTPS'] ) ? 'https' : 'http';
+            define( 'WP_HOME', $$cafebean_scheme . '://' . $$_SERVER['HTTP_HOST'] );
+            define( 'WP_SITEURL', $$cafebean_scheme . '://' . $$_SERVER['HTTP_HOST'] );
+        } else {
+            define( 'WP_HOME', '${WP_URL}' );
+            define( 'WP_SITEURL', '${WP_URL}' );
+        }
         define( 'WP_DEBUG_LOG', true );
         define( 'WP_DEBUG_DISPLAY', false );
         define( 'DISABLE_WP_CRON', true );
