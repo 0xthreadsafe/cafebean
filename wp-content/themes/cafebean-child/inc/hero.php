@@ -100,6 +100,33 @@ function cafebean_inject_hero_slides( $content, $block ) {
 add_filter( 'render_block', 'cafebean_inject_hero_slides', 10, 2 );
 
 /**
+ * Mark the story band so its photo is fetched after load.
+ *
+ * The band sits well below the fold, but a CSS background is fetched eagerly
+ * regardless, and its weight was competing with the hero for bandwidth.
+ *
+ * @param string $content Rendered block HTML.
+ * @param array  $block   Parsed block.
+ * @return string
+ */
+function cafebean_defer_band_image( $content, $block ) {
+	if ( 'core/group' !== ( $block['blockName'] ?? '' ) ) {
+		return $content;
+	}
+	if ( false === strpos( (string) $content, 'cb-band' ) ) {
+		return $content;
+	}
+
+	return preg_replace(
+		'/(<div[^>]*class="[^"]*cb-band[^"]*")/',
+		'$1 data-cb-bg="' . esc_url( CAFEBEAN_URI . '/assets/img/band.webp' ) . '"',
+		$content,
+		1
+	);
+}
+add_filter( 'render_block', 'cafebean_defer_band_image', 10, 2 );
+
+/**
  * Hand the later slides their images once the page has finished loading.
  *
  * Inline and dependency-free: this must not wait on jQuery, which is itself
@@ -115,13 +142,48 @@ function cafebean_hero_defer_script() {
 	?>
 	<script>
 	( function () {
+		function paint( el ) {
+			if ( el.style.backgroundImage ) {
+				return;
+			}
+			var image = 'url(' + el.dataset.cbBg + ')';
+			// The band keeps its darkening scrim, which lives in the same
+			// property, so it has to be re-stated alongside the image.
+			el.style.backgroundImage = el.classList.contains( 'cb-band' )
+				? 'linear-gradient(rgba(25,15,9,.76),rgba(25,15,9,.76)),' + image
+				: image;
+		}
+
 		function load() {
-			var slides = document.querySelectorAll( '.cb-hero__slide[data-cb-bg]' );
-			for ( var i = 0; i < slides.length; i++ ) {
-				if ( ! slides[ i ].style.backgroundImage ) {
-					slides[ i ].style.backgroundImage = 'url(' + slides[ i ].dataset.cbBg + ')';
+			// Off-screen bands wait until the reader approaches them rather
+			// than competing with the hero for bandwidth straight after load.
+			var lazy = document.querySelectorAll( '.cb-band[data-cb-bg]' );
+			if ( 'IntersectionObserver' in window ) {
+				var io = new IntersectionObserver( function ( entries ) {
+					entries.forEach( function ( entry ) {
+						if ( entry.isIntersecting ) {
+							paint( entry.target );
+							io.unobserve( entry.target );
+						}
+					} );
+				}, { rootMargin: '300px' } );
+				for ( var b = 0; b < lazy.length; b++ ) {
+					io.observe( lazy[ b ] );
+				}
+			} else {
+				for ( var f = 0; f < lazy.length; f++ ) {
+					paint( lazy[ f ] );
 				}
 			}
+
+			// The second slide is not shown for six seconds, so there is no
+			// reason to fetch the rotation while the first paint settles.
+			setTimeout( function () {
+				var slides = document.querySelectorAll( '.cb-hero__slide[data-cb-bg]' );
+				for ( var s = 0; s < slides.length; s++ ) {
+					paint( slides[ s ] );
+				}
+			}, 2500 );
 		}
 		if ( document.readyState === 'complete' ) {
 			load();

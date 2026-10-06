@@ -69,7 +69,7 @@ body {
 	background-color: var(--cb-color-accent);
 	color: var(--cb-color-accent-ink);
 	font-size: 0.8rem;
-	font-weight: 500;
+	font-weight: 400;
 	line-height: 1.6;
 }
 
@@ -86,7 +86,7 @@ body {
 .cb-shipping-progress__label {
 	margin-block: 0 var(--cb-space-sm);
 	font-size: 0.95rem;
-	font-weight: 500;
+	font-weight: 400;
 }
 
 .cb-shipping-progress__track {
@@ -374,7 +374,7 @@ body {
 	border-radius: var(--cb-radius);
 	background-color: var(--cb-color-accent);
 	color: #fff;
-	font-weight: 500;
+	font-weight: 400;
 }
 
 .cb-hero .wp-block-button__link:hover,
@@ -619,7 +619,7 @@ body {
 .woocommerce ul.products li.product .woocommerce-loop-product__title {
 	padding-inline: 0;
 	font-size: 1.05rem;
-	font-weight: 500;
+	font-weight: 400;
 }
 
 .woocommerce ul.products li.product .price,
@@ -667,7 +667,7 @@ body {
 
 .woocommerce ul.products li.product-category h2 {
 	font-size: 1.05rem !important;
-	font-weight: 500;
+	font-weight: 400;
 }
 
 /*
@@ -687,4 +687,85 @@ body.ast-separate-container {
    backgrounds do not bleed into the paper-coloured page. */
 .woocommerce ul.products li.product img {
 	background-color: #fff;
+}
+
+/* ========================================================================
+ * Full-bleed bands
+ *
+ * The page felt empty because content floated in large gaps. Bands fill the
+ * width with purposeful content instead, which is how the reference sites
+ * handle the same problem - a page-wide background image behind text would
+ * only hurt readability.
+ * ===================================================================== */
+
+.cb-statement-band {
+	padding-block: var(--cb-space-xl);
+	padding-inline: var(--cb-space-md);
+	background-color: var(--cb-color-ink);
+}
+
+.cb-statement-band .cb-statement {
+	margin-block: 0;
+	color: var(--cb-color-bg);
+}
+
+.cb-band {
+	position: relative;
+	padding-block: clamp(4rem, 12vw, 8rem);
+	padding-inline: var(--cb-space-md);
+	/* The photo is attached after load - see inc/hero.php - so the colour below
+	   is what shows until then. */
+	background-color: #1a100a;
+	background-position: center;
+	background-size: cover;
+	color: #fff;
+	text-align: center;
+}
+
+.cb-band > * {
+	max-inline-size: 58ch;
+	margin-inline: auto;
+}
+
+.cb-band__title {
+	margin-block: 0 var(--cb-space-md);
+	font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+	color: #fff;
+}
+
+.cb-band__text {
+	margin-block-end: var(--cb-space-lg);
+	font-size: clamp(1rem, 2.2vw, 1.12rem);
+	line-height: 2.1;
+	color: rgb(255 255 255 / 88%);
+}
+
+.cb-band .wp-block-button__link {
+	border: 1px solid #fff;
+	border-radius: 999px;
+	background-color: transparent;
+	color: #fff;
+	padding-block: 0.8em;
+	padding-inline: 2.2em;
+	transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.cb-band .wp-block-button__link:hover {
+	background-color: #fff;
+	color: var(--cb-color-ink);
+}
+
+/* Bands butt straight against neighbouring sections, with no stray gap. */
+.home .entry-content > .alignfull {
+	margin-block: 0;
+}
+
+.home .entry-content > .alignfull + h2 {
+	margin-block-start: var(--cb-space-xl);
+}
+
+/* The category row was narrower than the product grid above it, which read as
+   an accidental indent. */
+.woocommerce ul.products.columns-3 {
+	inline-size: 100%;
 }

@@ -12,7 +12,9 @@ defined( 'ABSPATH' ) || exit;
 
 $mapping = array(
 	'دانه قهوه'   => 'dane-ghahve-boryan',
-	'پودر قهوه'   => 'ghahve-asiab-shode',
+	// Not ghahve-asiab-shode: that photo is a hand against a white studio
+	// background, and a centre square crop renders as an almost blank tile.
+	'پودر قهوه'   => 'ghahve-shir',
 	'لوازم جانبی' => 'loazem-espresso',
 );
 

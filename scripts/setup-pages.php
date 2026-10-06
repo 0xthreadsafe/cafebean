@@ -102,9 +102,13 @@ $home = <<<'HTML'
 </div>
 <!-- /wp:group -->
 
+<!-- wp:group {"align":"full","className":"cb-statement-band","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull cb-statement-band">
 <!-- wp:paragraph {"align":"center","className":"cb-statement"} -->
 <p class="has-text-align-center cb-statement">ما دانه‌ها را مستقیم از تولیدکننده می‌خریم و در دسته‌های کوچک برشته می‌کنیم. هر بسته تاریخ برشته‌کاری دارد، چون قهوهٔ تازه با قهوهٔ مانده یکی نیست.</p>
 <!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
 
 <!-- wp:shortcode -->
 [cafebean_trust_badges]
@@ -118,12 +122,32 @@ $home = <<<'HTML'
 [products limit="4" columns="4" visibility="featured"]
 <!-- /wp:shortcode -->
 
+<!-- wp:group {"align":"full","className":"cb-band","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull cb-band">
+<!-- wp:heading {"level":2,"className":"cb-band__title"} -->
+<h2 class="wp-block-heading cb-band__title">از مزرعه تا فنجان شما</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"cb-band__text"} -->
+<p class="cb-band__text">دانه‌ها را از کشاورزانی می‌خریم که سال‌هاست با آن‌ها کار می‌کنیم. هر محموله پیش از برشته‌کاری چشیده و امتیازدهی می‌شود و فقط دانه‌هایی که به استاندارد ما می‌رسند وارد فروشگاه می‌شوند.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons">
+<!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/about/">داستان ما</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+</div>
+<!-- /wp:group -->
+
 <!-- wp:heading -->
 <h2 class="wp-block-heading">دسته‌بندی‌ها</h2>
 <!-- /wp:heading -->
 
 <!-- wp:shortcode -->
-[product_categories number="3" parent="0"]
+[product_categories number="3" columns="3" parent="0"]
 <!-- /wp:shortcode -->
 HTML;
 
