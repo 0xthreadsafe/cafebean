@@ -17,4 +17,5 @@ require_once CAFEBEAN_DIR . '/inc/setup.php';
 require_once CAFEBEAN_DIR . '/inc/woocommerce.php';
 require_once CAFEBEAN_DIR . '/inc/checkout.php';
 require_once CAFEBEAN_DIR . '/inc/cart.php';
+require_once CAFEBEAN_DIR . '/inc/hero.php';
 require_once CAFEBEAN_DIR . '/inc/performance.php';

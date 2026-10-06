@@ -281,15 +281,76 @@ body {
 	   markup. A constrained layout caps every other child at the content width. */
 	padding-block: clamp(5rem, 18vw, 11rem);
 	padding-inline: var(--cb-space-md);
-	background-image:
-		linear-gradient(rgb(25 15 9 / 72%), rgb(25 15 9 / 72%)),
-		url("assets/img/hero.webp");
-	background-size: cover;
-	background-position: center;
+	overflow: hidden;
 	color: #fff;
+	/* Fallback colour: visible for the moment before the first slide paints. */
+	background-color: #1a100a;
 }
 
-.cb-hero > * {
+/* The slide stack sits behind everything, with the scrim above it. */
+.cb-hero__slides {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+
+.cb-hero__slide {
+	position: absolute;
+	inset: 0;
+	background-position: center;
+	background-size: cover;
+	opacity: 0;
+	animation-name: cb-hero-rotate;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+	/* duration and delay are set inline, derived from the number of slides */
+	will-change: opacity;
+}
+
+/*
+ * Each slide holds full opacity for its own quarter of the cycle, then fades
+ * out while the next fades in. The window is slightly wider than 1/n so the
+ * two overlap and the background never shows through the crossfade.
+ */
+@keyframes cb-hero-rotate {
+	0%      { opacity: 1; }
+	21%     { opacity: 1; }
+	29%     { opacity: 0; }
+	96%     { opacity: 0; }
+	100%    { opacity: 1; }
+}
+
+.cb-hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background-color: rgb(25 15 9 / 72%);
+}
+
+/* Lift the text above the slides and the scrim. */
+.cb-hero > *:not(.cb-hero__slides) {
+	position: relative;
+	z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cb-hero__slide {
+		animation: none;
+	}
+
+	/* Hold the first slide still rather than showing nothing. */
+	.cb-hero__slide:first-child {
+		opacity: 1;
+	}
+}
+
+/*
+ * Text columns are capped for readability, but the slide stack must not be:
+ * it is a background layer and has to span the whole band. Without the
+ * exclusion it inherits the 60ch cap and the photo shows as a centred strip.
+ */
+.cb-hero > *:not(.cb-hero__slides) {
 	max-inline-size: 60ch;
 	margin-inline: auto;
 }

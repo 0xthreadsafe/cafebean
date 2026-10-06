@@ -60,9 +60,12 @@ function cafebean_preload_assets() {
 	);
 
 	if ( is_front_page() ) {
+		// Only the first slide is preloaded: it is the one painted immediately
+		// and the one Lighthouse measures. The rest load as the rotation reaches
+		// them, so the initial payload does not grow with the slideshow.
 		printf(
 			'<link rel="preload" href="%s" as="image" type="image/webp" fetchpriority="high">' . "\n",
-			esc_url( CAFEBEAN_URI . '/assets/img/hero.webp' )
+			esc_url( CAFEBEAN_URI . '/assets/img/hero-1.webp' )
 		);
 	}
 
