@@ -14,7 +14,7 @@ Text Domain: cafebean
  * change happens here and nowhere else.
  */
 :root {
-	--cb-font: "Vazirmatn", system-ui, sans-serif;
+	--cb-font: "B Nazanin", system-ui, -apple-system, "Segoe UI", sans-serif;
 
 	--cb-color-bg: #f7f3ed;
 	--cb-color-surface: #ffffff;
@@ -38,6 +38,9 @@ Text Domain: cafebean
 
 body {
 	font-family: var(--cb-font);
+	/* B Nazanin renders appreciably smaller than Vazirmatn at the same size, so
+	   the base is nudged up rather than every rule being rewritten. */
+	font-size: 1.08rem;
 	line-height: var(--cb-line-height);
 	color: var(--cb-color-ink);
 	background-color: var(--cb-color-bg);

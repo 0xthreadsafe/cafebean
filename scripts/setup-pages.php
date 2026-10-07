@@ -105,7 +105,7 @@ $home = <<<'HTML'
 <!-- wp:group {"align":"full","className":"cb-statement-band","layout":{"type":"constrained"}} -->
 <div class="wp-block-group alignfull cb-statement-band">
 <!-- wp:paragraph {"align":"center","className":"cb-statement"} -->
-<p class="has-text-align-center cb-statement">ما دانه‌ها را مستقیم از تولیدکننده می‌خریم و در دسته‌های کوچک برشته می‌کنیم. هر بسته تاریخ برشته‌کاری دارد، چون قهوهٔ تازه با قهوهٔ مانده یکی نیست.</p>
+<p class="has-text-align-center cb-statement">ما دانه‌ها را مستقیم از تولیدکننده می‌خریم و در دسته‌های کوچک برشته می‌کنیم. هر بسته تاریخ برشته‌کاری دارد، چون قهوه تازه با قهوه مانده یکی نیست.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->

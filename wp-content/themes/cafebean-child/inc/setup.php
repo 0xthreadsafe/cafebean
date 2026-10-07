@@ -56,7 +56,7 @@ add_action( 'wp_enqueue_scripts', 'cafebean_enqueue_styles' );
 function cafebean_preload_assets() {
 	printf(
 		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
-		esc_url( CAFEBEAN_URI . '/assets/fonts/Vazirmatn-Regular.woff2' )
+		esc_url( CAFEBEAN_URI . '/assets/fonts/bnazanin-regular.woff2' )
 	);
 
 	if ( is_front_page() ) {
@@ -92,7 +92,7 @@ function cafebean_admin_font() {
 	);
 	wp_add_inline_style(
 		'cafebean-admin-fonts',
-		'body, .wp-admin, #wpadminbar * { font-family: "Vazirmatn", system-ui, sans-serif; }'
+		'body, .wp-admin, #wpadminbar * { font-family: "B Nazanin", system-ui, sans-serif; }'
 	);
 }
 add_action( 'admin_enqueue_scripts', 'cafebean_admin_font' );

@@ -1,22 +1,26 @@
 /**
- * Vazirmatn, self-hosted. Google Fonts is unreliable from Iran, so the files
- * ship with the theme. Only two weights are bundled: a third cost 50KB, more than any image on
- * the page, for a weight most text did not use.
- * add another @font-face before using a new weight rather than letting the
- * browser synthesise one.
+ * B Nazanin, self-hosted.
+ *
+ * Licence: B Nazanin is a commercial font from Borna Rayaneh, not an open one.
+ * Confirm the licence covers web embedding before this is deployed publicly.
+ *
+ * The font carries no Latin letters at all - it is a legacy Persian face - so
+ * Latin runs (WooCommerce strings, email addresses, SKUs) fall through to the
+ * system stack per character. That is why no Latin webfont is bundled: adding
+ * one would cost more than it returns for the handful of Latin words on screen.
  */
 
 @font-face {
-	font-family: "Vazirmatn";
-	src: url("../fonts/Vazirmatn-Regular.woff2") format("woff2");
+	font-family: "B Nazanin";
+	src: url("../fonts/bnazanin-regular.woff2") format("woff2");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: "Vazirmatn";
-	src: url("../fonts/Vazirmatn-Bold.woff2") format("woff2");
+	font-family: "B Nazanin";
+	src: url("../fonts/bnazanin-bold.woff2") format("woff2");
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
