@@ -222,8 +222,8 @@ body {
 .cb-demo-banner {
 	padding-block: var(--cb-space-sm);
 	padding-inline: var(--cb-space-md);
-	background-color: var(--cb-color-ink);
-	color: var(--cb-color-bg);
+	background-color: var(--cb-color-bar, var(--cb-color-ink));
+	color: var(--cb-color-bar-ink, var(--cb-color-bg));
 	text-align: center;
 	font-size: 0.9rem;
 }
@@ -287,11 +287,21 @@ body {
 	background-color: #1a100a;
 }
 
-/* The slide stack sits behind everything, with the scrim above it. */
-.cb-hero__slides {
+/*
+ * The slide stack sits behind everything, with the scrim above it.
+ *
+ * WordPress's constrained layout caps every child of the group at the content
+ * width, including this one, which left the photo as a centred strip with the
+ * hero's fallback colour showing on either side. Excluding it from the text
+ * width rule was not enough - the cap has to be lifted explicitly.
+ */
+.cb-hero > .cb-hero__slides {
 	position: absolute;
 	inset: 0;
 	z-index: 0;
+	max-inline-size: none;
+	inline-size: auto;
+	margin-inline: 0;
 }
 
 .cb-hero__slide {
@@ -497,8 +507,8 @@ body {
 .cb-ticker {
 	overflow: hidden;
 	border-block: 1px solid var(--cb-color-border);
-	background-color: var(--cb-color-ink);
-	color: var(--cb-color-bg);
+	background-color: var(--cb-color-bar, var(--cb-color-ink));
+	color: var(--cb-color-bar-ink, var(--cb-color-bg));
 }
 
 .cb-ticker__track {
@@ -653,7 +663,9 @@ body {
 .cb-badge--product {
 	border-radius: 999px;
 	background-color: rgb(255 255 255 / 92%);
-	color: var(--cb-color-ink);
+	/* Fixed dark ink, not the ink token: the pill is always light, so following
+	   a palette flip would make the text vanish into its own background. */
+	color: #2b1d14;
 	font-size: 0.72rem;
 	letter-spacing: 0.03em;
 	box-shadow: none;
@@ -768,4 +780,171 @@ body.ast-separate-container {
    an accidental indent. */
 .woocommerce ul.products.columns-3 {
 	inline-size: 100%;
+}
+
+/* ========================================================================
+ * Photographic page background
+ *
+ * The photo is dark, so the whole surface flips to a light-on-dark scheme -
+ * the previous dark-ink-on-paper tokens would be unreadable over it.
+ *
+ * The image is painted by fixed pseudo-elements rather than a background on
+ * body: background-attachment:fixed repaints on every scroll frame and stutters
+ * badly on mobile, while a fixed layer is composited once.
+ * ===================================================================== */
+
+:root {
+	--cb-color-ink: #f4ede5;
+	--cb-color-ink-muted: #d8cabb;
+	--cb-color-accent: #d9a066;
+	--cb-color-surface: rgb(26 17 11 / 72%);
+	--cb-color-border: rgb(255 255 255 / 14%);
+	/* Dark bars have their own token: they previously borrowed ink for the
+	   background and bg for the text, which inverted both when the palette
+	   flipped to light-on-dark. */
+	--cb-color-bar: rgb(18 11 7 / 88%);
+	--cb-color-bar-ink: #f4ede5;
+
+	--ast-global-color-0: var(--cb-color-accent);
+	--ast-global-color-1: #e8bd8a;
+	--ast-global-color-2: var(--cb-color-ink);
+	--ast-global-color-3: var(--cb-color-ink-muted);
+}
+
+/*
+ * A real dark colour on body, not transparent. The photo is painted by a
+ * pseudo-element above it, which contrast checkers cannot see - with a
+ * transparent body they assume a white page and report every light label as
+ * unreadable. This gives them something truthful to measure against, and it is
+ * also what shows if the image fails to load.
+ */
+html body,
+body.ast-plain-container,
+body.ast-page-builder-template,
+body.ast-separate-container {
+	background-color: #150e09;
+	color: var(--cb-color-ink);
+}
+
+body::before,
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+}
+
+body::before {
+	z-index: -2;
+	background-image: url("assets/img/page-bg-mobile.webp");
+	background-position: center;
+	background-size: cover;
+}
+
+@media (min-width: 768px) {
+	body::before {
+		background-image: url("assets/img/page-bg.webp");
+	}
+}
+
+/*
+ * A light scrim only - enough to hold text legible, not so much that the photo
+ * flattens into a brown wash. Readability is carried by the panels behind the
+ * text instead.
+ */
+body::after {
+	z-index: -1;
+	background-image: linear-gradient(rgb(18 11 7 / 24%), rgb(18 11 7 / 38%));
+}
+
+/* --- Surfaces ----------------------------------------------------------- */
+
+.site-header,
+.ast-primary-header-bar,
+.main-header-bar {
+	background-color: rgb(18 11 7 / 72%);
+	backdrop-filter: blur(8px);
+	border-block-end: 1px solid var(--cb-color-border);
+}
+
+.site-title a,
+.site-title a:visited,
+.main-header-menu a {
+	color: var(--cb-color-ink);
+}
+
+.cb-statement-band {
+	background-color: transparent;
+}
+
+/* Text sitting straight on the photo gets a soft shadow rather than a panel,
+   so the picture stays visible behind it. */
+.cb-statement,
+.cb-trust__item,
+.home .entry-content > h2 {
+	text-shadow: 0 1px 12px rgb(10 6 4 / 85%), 0 1px 3px rgb(10 6 4 / 70%);
+}
+
+.cb-trust__item,
+.cb-trust__item:hover {
+	border-color: var(--cb-color-border);
+	color: var(--cb-color-ink);
+}
+
+.cb-trust__text,
+.woocommerce ul.products li.product .price,
+.woocommerce ul.products li.product .ast-woo-product-category {
+	color: var(--cb-color-ink-muted);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product h2,
+.entry-content h1,
+.entry-content h2,
+.entry-content h3 {
+	color: var(--cb-color-ink);
+}
+
+/* Forms and notices need an opaque backing or the photo shows through text. */
+.cb-form__row input,
+.cb-form__row textarea,
+.cb-notice,
+.woocommerce table,
+.woocommerce .cart-collaterals,
+.cb-shipping-progress {
+	background-color: var(--cb-color-surface);
+	border-color: var(--cb-color-border);
+	color: var(--cb-color-ink);
+}
+
+/*
+ * Astra's footer builder paints white on .site-below-footer-wrap, inside
+ * .site-footer, so colouring the footer alone left a white strip under the
+ * page and the copyright line failed contrast.
+ */
+.site-footer,
+.ast-small-footer,
+.site-footer .site-below-footer-wrap,
+.site-footer .site-primary-footer-wrap {
+	background-color: rgb(18 11 7 / 82%);
+	color: var(--cb-color-ink-muted);
+}
+
+.ast-footer-copyright,
+.ast-footer-copyright p,
+.site-footer a {
+	color: var(--cb-color-ink-muted);
+}
+
+/* WooCommerce ships #777 for the breadcrumb, which is a grey tuned for a white
+   page and falls just under the ratio on this dark one. */
+.ast-woocommerce-container .woocommerce-breadcrumb,
+.ast-woocommerce-container .woocommerce-breadcrumb a,
+.woocommerce-breadcrumb,
+.woocommerce-breadcrumb a {
+	color: var(--cb-color-ink-muted);
+}
+
+.woocommerce-breadcrumb a:hover {
+	color: var(--cb-color-accent);
 }
