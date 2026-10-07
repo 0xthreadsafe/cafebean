@@ -844,9 +844,15 @@ body::before {
 	background-size: cover;
 }
 
+/*
+ * Wide screens get a landscape crop of the same photo. The original is 2:3, so
+ * covering a 16:9 monitor keeps only the middle third - which is all cup, blown
+ * up until it swamps the page. The crop is the steam-and-beans band, where no
+ * single object dominates at any size.
+ */
 @media (min-width: 768px) {
 	body::before {
-		background-image: url("assets/img/page-bg.webp");
+		background-image: url("assets/img/page-bg-wide.webp");
 	}
 }
 
