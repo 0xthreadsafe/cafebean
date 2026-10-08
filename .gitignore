@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 dist/
 wp-content/uploads/
 .DS_Store
